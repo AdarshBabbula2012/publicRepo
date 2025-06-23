@@ -47,7 +47,7 @@ spark = SparkSession.builder \
     .appName("PipelineExecutionReport") \
     .getOrCreate()
 
-REPORT_DIR = "pipeline_reports_new"
+REPORT_DIR = "/home/spark-srv-account/pipeline_reports_new"
 
 os.makedirs(REPORT_DIR, exist_ok=True)
 
