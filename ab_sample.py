@@ -8,6 +8,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
+import json
 
 def fetch_credentials(credential_id, credential_type_id, key_map=('username', 'password')):
     try:
