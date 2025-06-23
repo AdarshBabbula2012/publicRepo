@@ -34,10 +34,10 @@ def fetch_credentials(credential_id, credential_type_id, key_map=('username', 'p
         logging.error(f"Failed to fetch credentials: {e}")
         sys.exit(1)
 
-# movementt id
-if len(sys.argv) < 2:
-    print("Usage: spark-submit report.py <data_movement_id>")
-    sys.exit(1)
+# # movementt id
+# if len(sys.argv) < 2:
+#     print("Usage: spark-submit report.py <data_movement_id>")
+#     sys.exit(1)
 
 
 spark = SparkSession.builder \
