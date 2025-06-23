@@ -6,16 +6,12 @@ import logging
 import sys
 
 spark = SparkSession.builder \
-    .appName("Snowflake Integration") \
-    .config("spark.jars.packages", "net.snowflake:spark-snowflake_2.12:3.1.1,org.apache.hadoop:hadoop-aws:3.3.4") \
+    .appName("Adarsh Integration") \
     .getOrCreate()
 
 
-sf_credential_id = int(spark.conf.get("spark.nabu.sf_credential_id"))
-sf_credential_type_id = int(spark.conf.get("spark.nabu.sf_credential_type_id"))
-aws_credential_id = int(spark.conf.get("spark.nabu.aws_credential_id"))
-aws_credential_type_id = int(spark.conf.get("spark.nabu.aws_credential_type_id"))
-target_path = spark.conf.get("spark.target.path")
+sf_credential_id = int(spark.conf.get("spark.nabu.credential_id"))
+sf_credential_type_id = int(spark.conf.get("spark.nabu.credential_type_id"))
 token = spark.conf.get("spark.nabu.token")
 credential_endpoint_url = spark.conf.get("spark.nabu.fireshots_url")
 
