@@ -44,6 +44,8 @@ spark = SparkSession.builder \
     .appName("PipelineExecutionReport") \
     .getOrCreate()
 
+REPORT_DIR = "pipeline_reports_new"
+
 os.makedirs(REPORT_DIR, exist_ok=True)
 
 data_movement_id = int(spark.conf.get("spark.nabu.data_movement_id"))
@@ -61,7 +63,7 @@ JDBC_DRIVER = "org.postgresql.Driver"
 USERNAME = kosh_username
 PASSWORD = kosh_password
 JDBC_URL = "jdbc:postgresql://w3.devpsql.modak.com:5432/nabu_v3"
-REPORT_DIR = "pipeline_reports_new"
+
 
 # JDBC Properties
 db_properties = {
