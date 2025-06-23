@@ -1,6 +1,5 @@
 import json
 from pyspark.sql import SparkSession
-import snowflake.connector
 import requests
 import logging
 import sys
