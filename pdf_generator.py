@@ -716,13 +716,13 @@ os.makedirs(NEW_REPORT_DIR, exist_ok=True)
 
 
 # Initialize SparkSession once
-custom_code_batch_id = 167376462025880870
+report_generator_batch_id = spark.conf.get("spark.nabu.batch_id")
 
 # Step 1: Get dataflow_id and dataflow_batch_id
 workflow_query = f"""
     SELECT workflow_orch_id, batch_id
     FROM nabu.checkpoint_workflow_node_status
-    WHERE node_batch_id = {custom_code_batch_id}
+    WHERE node_batch_id = {report_generator_batch_id}
 """
 
 workflow_df = spark.read.format("jdbc").options(
