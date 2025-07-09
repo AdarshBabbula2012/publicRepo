@@ -3,12 +3,12 @@ import sys
 import traceback
 from urllib.parse import urlparse
 
+import psycopg2
 import urllib3
 from pyspark.sql import SparkSession
 import re
 import json
 import requests
-
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def get_kosh_connection(host, port, database, user_name, password):
@@ -28,6 +28,20 @@ def parse_postgres_jdbc_url(jdbc_url):
         raise ValueError(f"Invalid PostgreSQL JDBC URL: {jdbc_url}")
     host, port, dbname = match.groups()
     return host, port, dbname
+
+def get_pipeline_id(conn, pipeline_name):
+    query = f"""
+            SELECT data_movement_id from nabu.data_movement_physical where data_movement_name='{pipeline_name}'  and valid_to_ts = '9999-12-31 00:00:00.000'
+        """
+
+    cursor = conn.cursor()
+    cursor.execute(query)
+    result = cursor.fetchone()
+
+    if result:
+        return result[0]
+    else:
+        raise Exception(f"No pipeline found for name like '{pipeline_name}'.")
 
 def fetch_credentials(credential_id, credential_type_id, key_map=('username', 'password')):
     try:
@@ -67,6 +81,7 @@ credential_endpoint_url = spark.conf.get("spark.nabu.fireshots_url")
 kosh_url = spark.conf.get("spark.nabu.kosh_url")
 parsed = urlparse(credential_endpoint_url)
 
+
 config["fire_shots_url"] = f"{parsed.scheme}://{parsed.hostname}:{parsed.port}"
 
 print("fireshots_url: " , config["fire_shots_url"])
@@ -80,4 +95,16 @@ kosh_credential_type_id = 1
 
 config["kosh"]["user_name"], config["kosh"]["password"] = fetch_credentials(kosh_credential_id, kosh_credential_type_id, key_map=('username', 'password'))
 
-print(config)
+
+config["pdf_generation_pipeline"] ={}
+
+config["pdf_generation_pipeline"]["pipeline_name"] = spark.conf.get("spark.nabu.report_generation_pipeline")
+
+kosh_conn = get_kosh_connection(host=config["kosh"]["host"], port=config["kosh"]["port"],
+                                    database=config["kosh"]["database"], user_name=config["kosh"]["user_name"],
+                                    password=config["kosh"]["password"])
+
+
+config["pdf_generation_pipeline"]["pipeline_id"] = get_pipeline_id(conn=kosh_conn, pipeline_name=config["pdf_generation_pipeline"]["pipeline_name"])
+
+print("config: " , config)
