@@ -116,7 +116,14 @@ kosh_conn = get_kosh_connection(host=config["kosh"]["host"], port=config["kosh"]
                                     database=config["kosh"]["database"], user_name=config["kosh"]["user_name"],
                                     password=config["kosh"]["password"])
 
+kosh_credential_name = get_credential_name(conn=kosh_conn, credential_id=kosh_credential_id)
+
+config["kosh"]["credential_name"] = kosh_credential_name
+
+config["kosh"]["credential_id"] = kosh_credential_id
 
 config["pdf_generation_pipeline"]["pipeline_id"] = get_pipeline_id(conn=kosh_conn, pipeline_name=config["pdf_generation_pipeline"]["pipeline_name"])
 
 print("config: " , config)
+
+
