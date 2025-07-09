@@ -7,6 +7,7 @@ import urllib3
 from pyspark.sql import SparkSession
 import re
 import json
+import requests
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
