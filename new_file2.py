@@ -19,25 +19,12 @@ logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
 
 # The fetch_credentials function is kept as it was in the user's provided updated.txt,
 # although its direct use for DB credentials is now bypassed by the hardcoded values.
-def fetch_credentials(credential_id, credential_type_id, key_map=('username', 'password'), token=None,
-                      credential_endpoint_url=None):
-    """
-    Fetches credentials from a given endpoint using a token.
-    This function is primarily for environments where credentials are dynamically fetched.
-    """
-    # This warning indicates that the function might be called, but its return
-    # values are not used for PIPELINE_DB_USERNAME/PASSWORD in main block.
-    logging.warning(
-        "fetch_credentials function is being called, but its return values are not used for direct DB connection in main block.")
-    if not token or not credential_endpoint_url:
-        logging.error("Authentication token or credential endpoint URL is missing for fetch_credentials.")
-        return "N/A", "N/A"  # Return N/A if dynamic fetching is attempted without necessary params
-
+def fetch_credentials(credential_id, credential_type_id, key_map=('username', 'password')):
     try:
         headers = {
             'Authorization': token,
-            'Accept': "application/json",
-            'Content-Type': "application/json"
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
         }
         payload = json.dumps({
             "credential_id": credential_id,
@@ -55,8 +42,7 @@ def fetch_credentials(credential_id, credential_type_id, key_map=('username', 'p
 
     except Exception as e:
         logging.error(f"Failed to fetch credentials: {e}")
-        # sys.exit(1) # Original TL logic might exit here, but for combined PDF, we handle gracefully.
-        return "N/A", "N/A"
+        sys.exit(1)
 
 
 # -------------------- HELPER FUNCTIONS --------------------
@@ -832,6 +818,7 @@ credential_endpoint_url = spark.conf.get("spark.nabu.fireshots_url")
 
 kosh_username, kosh_password = fetch_credentials(kosh_credential_id, kosh_credential_type_id, key_map=('username', 'password'))
 
+
 PIPELINE_DB_URL = "jdbc:postgresql://w3.devpsql.modak.com:5432/nabu_v3"
 PIPELINE_DB_USERNAME = kosh_username
 PIPELINE_DB_PASSWORD = kosh_password
@@ -848,7 +835,7 @@ logging.info(f"Using provided DB Username: {PIPELINE_DB_USERNAME}")  # Corrected
 
 os.makedirs(NEW_REPORT_DIR, exist_ok=True)
 
-report_generator_batch_id = spark.conf.get("spark.nabu.batch_id")
+report_generator_batch_id = 167376462025883387
 
 # Step 1: Get dataflow_id and dataflow_batch_id
 workflow_query = f"""
