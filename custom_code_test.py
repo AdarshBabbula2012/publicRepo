@@ -1,20 +1,37 @@
-import json
 import logging
 import sys
+import traceback
+from urllib.parse import urlparse
 
-import requests
+import urllib3
+
+from creating_modify_validation_pipelines import *
+from creating_workspace_pipeline import *
+from creating_dataflow_pipeline import *
+from creating_validation_dataflow_pipeline import *
+from yaml_validation import validating_details_provided
 from pyspark.sql import SparkSession
+import re
 
-from git import Repo
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-spark = SparkSession.builder \
-    .appName("PipelineExecutionReport") \
-    .getOrCreate()
+def get_kosh_connection(host, port, database, user_name, password):
+    conn = psycopg2.connect(
+        host=host,
+        port=port,
+        database=database,
+        user=user_name,
+        password=password,
+    )
+    return conn
 
-git_credential_id = int(spark.conf.get("spark.nabu.git_credential_id"))
-token = spark.conf.get("spark.nabu.token")
-credential_endpoint_url = spark.conf.get("spark.nabu.fireshots_url")
-
+def parse_postgres_jdbc_url(jdbc_url):
+    pattern = r"jdbc:postgresql://([^:/]+):(\d+)/([^?]+)"
+    match = re.match(pattern, jdbc_url)
+    if not match:
+        raise ValueError(f"Invalid PostgreSQL JDBC URL: {jdbc_url}")
+    host, port, dbname = match.groups()
+    return host, port, dbname
 
 def fetch_credentials(credential_id, credential_type_id, key_map=('username', 'password')):
     try:
@@ -42,19 +59,29 @@ def fetch_credentials(credential_id, credential_type_id, key_map=('username', 'p
         sys.exit(1)
 
 
+spark = SparkSession.builder \
+    .appName("PipelineExecutionReport") \
+    .getOrCreate()
 
-git_username, git_token = fetch_credentials(credential_id= git_credential_id, credential_type_id= 19, key_map=('username', 'pat'))
+config = {}
 
-repo_name = "publicRepo"
-branch = "main"  # or 'master'
+git_credential_id = int(spark.conf.get("spark.nabu.git_credential_id"))
+token = spark.conf.get("spark.nabu.token")
+credential_endpoint_url = spark.conf.get("spark.nabu.fireshots_url")
+kosh_url = spark.conf.get("spark.nabu.kosh_url")
+parsed = urlparse(credential_endpoint_url)
 
+config["fire_shots_url"] = f"{parsed.scheme}://{parsed.hostname}:{parsed.port}"
 
-repo_url = f"https://{git_token}@github.com/{git_username}/{repo_name}.git"
+print("fireshots_url: " , config["fire_shots_url"])
 
+config["kosh"] ={}
 
-destination_path = f"./{repo_name}"
+config["kosh"]["host"], config["kosh"]["port"], config["kosh"]["database"] = parse_postgres_jdbc_url(kosh_url)
 
+kosh_credential_id = int(spark.conf.get("spark.nabu.kosh_credential_id"))
+kosh_credential_type_id = 1
 
-print("Cloning...")
-Repo.clone_from(repo_url, destination_path, branch=branch)
-print(f"✅ Cloned into: {destination_path}")
+config["kosh"]["user_name"], config["kosh"]["password"] = fetch_credentials(kosh_credential_id, kosh_credential_type_id, key_map=('username', 'password'))
+
+print(config)
