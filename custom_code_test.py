@@ -25,7 +25,7 @@ def parse_postgres_jdbc_url(jdbc_url):
     pattern = r"jdbc:postgresql://([^:/]+):(\d+)/([^?]+)"
     match = re.match(pattern, jdbc_url)
     if not match:
-        raise ValueError(f"Invalid PostgreSQL JDBC URL: {jdbc_url}")
+        raise ValueError(f"Invalid Kosh JDBC URL: {jdbc_url}")
     host, port, dbname = match.groups()
     return host, port, dbname
 
@@ -42,6 +42,20 @@ def get_pipeline_id(conn, pipeline_name):
         return result[0]
     else:
         raise Exception(f"No pipeline found for name like '{pipeline_name}'.")
+
+def get_credential_name(conn, credential_id):
+    query = f"""
+            select credential_name from nabu.credential_info c where c.credential_id={credential_id}  and valid_to_ts = '9999-12-31 00:00:00.000'
+        """
+
+    cursor = conn.cursor()
+    cursor.execute(query)
+    result = cursor.fetchone()
+
+    if result:
+        return result[0]
+    else:
+        raise Exception(f"No credential found for id like '{credential_id}'.")
 
 def fetch_credentials(credential_id, credential_type_id, key_map=('username', 'password')):
     try:
@@ -79,12 +93,10 @@ git_credential_id = int(spark.conf.get("spark.nabu.git_credential_id"))
 token = spark.conf.get("spark.nabu.token")
 credential_endpoint_url = spark.conf.get("spark.nabu.fireshots_url")
 kosh_url = spark.conf.get("spark.nabu.kosh_url")
-parsed = urlparse(credential_endpoint_url)
 
 
-config["fire_shots_url"] = f"{parsed.scheme}://{parsed.hostname}:{parsed.port}"
+config["fire_shots_url"] = spark.conf.get("spark.nabu.fireshosts_end_point")
 
-print("fireshots_url: " , config["fire_shots_url"])
 
 config["kosh"] ={}
 
