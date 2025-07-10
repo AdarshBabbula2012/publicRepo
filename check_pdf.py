@@ -1284,7 +1284,7 @@ JDBC_DRIVER = "org.postgresql.Driver"
 # JDBC_JAR_PATH = "file:///C:/Users/MT23003/Downloads/postgresql-42.7.6.jar"
 
 # Report Directory
-NEW_REPORT_DIR = "/home/spark-srv-account/ab2012/pipeline_reports_new"  # New folder for saving PDFs
+# NEW_REPORT_DIR = "/home/spark-srv-account/ab2012/pipeline_reports_new"  # New folder for saving PDFs
 os.makedirs(NEW_REPORT_DIR, exist_ok=True)
 
 logging.info(f"Using provided DB URL: {PIPELINE_DB_URL}")
