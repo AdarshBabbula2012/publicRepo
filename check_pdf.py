@@ -1253,7 +1253,7 @@ sender_email = "nabu-dev.notifications@modak.com"
 sender_password = "Yuy62178"
 
 # Report Directory
-NEW_REPORT_DIR = "pipeline_reports_new"  # New folder for saving PDFs
+NEW_REPORT_DIR = "/home/spark-srv-account/ab2012/pipeline_reports_new/pipeline_reports_new"
 os.makedirs(NEW_REPORT_DIR, exist_ok=True)
 
 try:
