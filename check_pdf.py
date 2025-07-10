@@ -304,6 +304,8 @@ def generate_data_validation_pdf(pipeline_name, pipeline_id, batch_id, discrepan
     report_dir = os.path.join(NEW_REPORT_DIR, dataflow_batch_id)
     data_validation_pdf_full_path = os.path.join(report_dir, pdf_filename)
 
+    os.makedirs(report_dir, exist_ok=True)
+
     # Use a file stream to ensure explicit closing
     try:
         with open(data_validation_pdf_full_path, 'wb') as f:
