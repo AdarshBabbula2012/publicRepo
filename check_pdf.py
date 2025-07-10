@@ -1294,7 +1294,7 @@ logging.info(f"Using provided DB Username: {PIPELINE_DB_USERNAME}")  # Corrected
 
 os.makedirs(NEW_REPORT_DIR, exist_ok=True)
 
-report_generator_batch_id = 167376462025882330
+report_generator_batch_id = spark.conf.get("spark.nabu.batch_id")
 
 ui_url = spark.conf.get("spark.nabu.ui_url")
 email_creds_id = int(spark.conf.get("spark.nabu.email_credential_id"))
