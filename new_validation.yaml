@@ -3,7 +3,6 @@ pipeline_details:
     workflow_engine_name: ab2012_workflow_engine
     workspace_name: ab2012
     ingestion_pipeline_name: ab2012_validation_pypark
-    ui_credential_name: ab2012_token
     is_first_ingestion: true
 
 source_details:
