@@ -1,5 +1,4 @@
 pipeline_details:
-    pipeline_name_prefix: ab_dataflow_test_new
     compute_engine_name:  ab2012_standalone
     workflow_engine_name: ab2012_workflow_engine
     workspace_name: ab2012
