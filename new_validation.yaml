@@ -1,0 +1,30 @@
+pipeline_details:
+    pipeline_name_prefix: ab_dataflow_test
+    compute_engine_name:  ab2012_standalone
+    workflow_engine_name: ab2012_workflow_engine
+    workspace_name: ab2012
+    ingestion_pipeline_name: ab2012_validation_pypark
+    ui_credential_name: ab2012_token
+    is_first_ingestion: true
+
+source_details:
+    type: s3
+    credential_name: ab2012_s3
+    file_type: csv
+
+target_details:
+    type: iceberg
+    data_connection_name: hive_sparktesting_ab
+
+compatible_datatype_mappings:
+  - source_type: string
+    target_types: [date, timestamp]
+mappings:
+  - source_object: s3://gratis-bucket-test/ab2012/cars_csv.csv
+    target_object: default.ab_cars
+    uniqueness_columns: [car, cylinders]
+    not_null_columns: [car, cylinders]
+  - source_object: s3://gratis-bucket-test/ab2012/employee_details.csv
+    target_object: default.ab_employee_details
+    uniqueness_columns: [ id ]
+    not_null_columns: [ city, age ]
