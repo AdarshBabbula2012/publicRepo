@@ -17,6 +17,7 @@ target_details:
 compatible_datatype_mappings:
   - source_type: string
     target_types: [date, timestamp]
+    
 mappings:
   - source_object: s3://gratis-bucket-test/ab2012/cars_csv.csv
     target_object: default.ab_cars
