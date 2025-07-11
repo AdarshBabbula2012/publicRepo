@@ -1,5 +1,5 @@
 pipeline_details:
-    ingestion_pipeline_name: ab2012_validation_pypark
+    ingestion_pipeline_name: ab2012_ingestion_pipeline
     compute_engine_name:  ab2012_standalone
     workflow_engine_name: ab2012_workflow_engine
     workspace_name: ab2012
