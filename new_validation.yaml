@@ -19,11 +19,11 @@ compatible_datatype_mappings:
     target_types: [date, timestamp]
     
 mappings:
-  - source_object: s3://gratis-bucket-test/ab2012/cars_csv.csv
-    target_object: default.ab_cars
-    uniqueness_columns: [car, cylinders]
-    not_null_columns: [car, cylinders]
-  - source_object: s3://gratis-bucket-test/ab2012/employee_details.csv
-    target_object: default.ab_employee_details
-    uniqueness_columns: [ id ]
-    not_null_columns: [ city, age ]
+  - source_object: s3://gratis-bucket-test/ab2012/changed_drug_details.csv
+    target_object: default.ab_drug_details
+    uniqueness_columns: [drug_id, disease_report_id]
+    not_null_columns: [phase, dose]
+  - source_object: s3://gratis-bucket-test/ab2012/new_employee_details.csv
+    target_object: default.ab_new_employee_details
+    uniqueness_columns: [ id, email ]
+    not_null_columns: [ id, name, age ]
